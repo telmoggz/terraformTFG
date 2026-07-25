@@ -36,8 +36,8 @@ resource "azurerm_network_security_group" "nsg_jump" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "5432"
-    source_address_prefix      = "10.0.2.0/24"
-    destination_address_prefix = "10.1.1.0/24"
+    source_address_prefix      = var.jump_ip
+    destination_address_prefix = var.postgresql_ip
   }
 
   security_rule {
@@ -134,11 +134,11 @@ resource "azurerm_network_security_group" "nsg_postgresql" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "5432"
-    source_address_prefix      = "10.0.2.0/24"
+    source_address_prefix      = var.jump_ip
     destination_address_prefix = "*"
   }
 
-    security_rule {
+  security_rule {
     name                       = "Allow-PG-from-App2"
     priority                   = 200
     direction                  = "Inbound"
@@ -146,7 +146,7 @@ resource "azurerm_network_security_group" "nsg_postgresql" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "5432"
-    source_address_prefix      = "10.2.1.0/24"
+    source_address_prefix      = var.app2_ip
     destination_address_prefix = "*"
   }
 
@@ -207,8 +207,8 @@ resource "azurerm_network_security_group" "nsg_app2" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "5432"
-    source_address_prefix      = "10.2.1.0/24"
-    destination_address_prefix = "10.1.1.0/24"
+    source_address_prefix      = var.app2_ip
+    destination_address_prefix = var.postgresql_ip
   }
 
   security_rule {

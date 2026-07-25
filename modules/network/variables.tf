@@ -1,7 +1,7 @@
 variable "vnet_name" {
   description = "The name of the virtual network."
   type        = string
-  
+
 }
 
 variable "location" {
@@ -23,7 +23,7 @@ variable "subnets" {
   description = "A map of subnets to create within the virtual network."
   type = map(object({
     address_prefixes = list(string)
-    delegation       = optional(object({
+    delegation = optional(object({
       service_name    = string
       service_actions = list(string)
     }))
