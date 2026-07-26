@@ -1,19 +1,35 @@
-variable "public_ip" {
-  description = "Public IP address to allow SSH access"
+variable "nsg_name" {
+  description = "The name of the network security group."
   type        = string
 }
 
-variable "jump_ip" {
-  description = "Jump host IP address"
+variable "location" {
+  description = "The Azure region where the network security group will be created."
   type        = string
 }
 
-variable "app2_ip" {
-  description = "App2 host IP address"
+variable "resource_group_name" {
+  description = "The name of the resource group in which to create the network security group."
   type        = string
 }
 
-variable "postgresql_ip" {
-  description = "PostgreSQL host IP address"
+variable "security_rules" {
+  description = "A list of security rules to be applied to the network security group."
+  type = list(object({
+    name                       = string
+    priority                   = number
+    direction                  = string
+    access                     = string
+    protocol                   = string
+    source_port_range          = string
+    destination_port_range     = string
+    source_address_prefix      = string
+    destination_address_prefix = string
+  }))
+  default = []
+}
+
+variable "subnet_id" {
+  description = "The ID of the subnet to associate with the network security group."
   type        = string
 }

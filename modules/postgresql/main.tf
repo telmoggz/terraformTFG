@@ -24,3 +24,11 @@ resource "azurerm_postgresql_flexible_server" "postgresql_server" {
   }
 
 }
+
+resource "azurerm_postgresql_flexible_server_database" "db" {
+  count     = var.db_name != null ? 1 : 0
+  name      = var.db_name
+  server_id = azurerm_postgresql_flexible_server.postgresql_server.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+}

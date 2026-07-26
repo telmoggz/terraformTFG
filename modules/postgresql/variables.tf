@@ -85,3 +85,9 @@ variable "ssl_enforcement_enabled" {
   type        = bool
   default     = true
 }
+
+variable "db_name" {
+  description = "The name of the database to create in the PostgreSQL server."
+  type        = string
+  default     = null
+}
