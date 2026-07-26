@@ -52,10 +52,10 @@ variable "image_offer" {
 variable "image_sku" {
   description = "The SKU of the image to use for the virtual machine."
   type        = string
-}   
+}
 
 variable "image_version" {
   description = "The version of the image to use for the virtual machine."
   type        = string
-}   
+}
 

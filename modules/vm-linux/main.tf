@@ -1,5 +1,5 @@
-resource "azurerem_public_ip" "public_ip" {
-  count              = var.create_public_ip ? 1 : 0
+resource "azurerm_public_ip" "public_ip" {
+  count               = var.create_public_ip ? 1 : 0
   name                = "pip-{var.vm_name}"
   location            = var.location
   resource_group_name = var.resource_group_name
