@@ -7,11 +7,11 @@ resource "azurerm_route_table" "route_table" {
 resource "azurerm_route" "route" {
   for_each = var.routes
 
-  name                   = each.key
-  resource_group_name    = azurerm_route_table.route_table.resource_group_name
-  route_table_name       = azurerm_route_table.route_table.name
-  address_prefix         = each.value.address_prefix
-  next_hop_type          = each.value.next_hop_type
+  name                = each.key
+  resource_group_name = azurerm_route_table.route_table.resource_group_name
+  route_table_name    = azurerm_route_table.route_table.name
+  address_prefix      = each.value.address_prefix
+  next_hop_type       = each.value.next_hop_type
 
   next_hop_in_ip_address = each.value.next_hop_type == "VirtualAppliance" ? each.value.next_hop_in_ip_address : null
 

@@ -24,7 +24,7 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "vm_size" {
+variable "size" {
   description = "The size of the virtual machine."
   type        = string
 }
@@ -59,3 +59,12 @@ variable "image_version" {
   type        = string
 }
 
+variable "os_disk_caching" {
+  description = "The caching mode of the OS disk."
+  type        = string
+}
+
+variable "storage_account_type" {
+  description = "The storage account type of the OS disk."
+  type        = string
+}
