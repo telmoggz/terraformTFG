@@ -66,7 +66,7 @@ variable "jump_image_sku" {
 variable "jump_image_version" {
   description = "The version of the image for the jump server VM."
   type        = string
-}   
+}
 
 variable "nva_name" {
   description = "The name of the NVA server VM."
