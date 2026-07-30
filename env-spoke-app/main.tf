@@ -22,6 +22,55 @@ module "virtual_network" {
   }
 }
 
+module "vnet_peering" {
+  source              = "../modules/vnet_peering"
+
+  local_rg_name = module.resource_group.name
+  local_vnet_id = module.virtual_network.vnet_id
+  local_vnet_name = module.virtual_network.vnet_name
+
+  remote_vnet_id = data.azurerm_virtual_network.hub_vnet.id
+  remote_vnet_name = data.azurerm_virtual_network.hub_vnet.name
+  remote_rg_name = data.azurerm_virtual_network.hub_vnet.resource_group_name
+
+  local_to_remote_peering_name = "spoke2-to-hub-peering"
+  remote_to_local_peering_name = "hub-to-spoke2-peering"
+}
+
+module "route_table" {
+  source              = "../modules/route_table"
+  route_table_name    = "rt-spoke2-to-nva"
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+
+  routes = [
+    {
+      name                   = "Force-To-NVA"
+      address_prefix         = "10.1.1.4"
+      next_hop_type          = "VirtualNetworkAppliance"
+      next_hop_in_ip_address = "10.0.1.4"
+    }
+  ]
+
+  subnet_associations = ["snet-cmp"]
+  
+}
+
+
+module "private_dns_zone" {
+  source              = "../modules/private_dns"
+  create_zone         = false
+  resource_group_name = var.hub_resource_group.name
+
+  private_dns_zone_name = "privatelink.postgres.database.azure.com"
+
+  vnet_links = {
+    "spoke2-link" = {
+      vnet_id              = module.virtual_network.vnet_id
+      registration_enabled = false
+    }
+  }
+}
 
 module "nsg_jump" {
   source              = "../modules/nsg"
@@ -144,4 +193,14 @@ module "cmp_vm" {
   image_sku       = var.cmp_image_sku
   image_version   = var.cmp_image_version
 
+}
+
+data "azurerm_private_dns_zone" "hub_dns" {
+  name                = "privatelink.postgres.database.azure.com"
+  resource_group_name = var.hub_resource_group_name
+}
+
+data "azurerm_virtual_network" "hub_vnet" {
+  name                = "vnet-hubpro"  # Nombre exacto que le diste a la VNet del Hub
+  resource_group_name = var.hub_resource_group_name
 }

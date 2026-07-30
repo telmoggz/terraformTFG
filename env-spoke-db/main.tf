@@ -22,6 +22,40 @@ module "virtual_network" {
   }
 }
 
+module "vnet_peering" {
+  source              = "../modules/vnet_peering"
+
+  local_rg_name = module.resource_group.name
+  local_vnet_id = module.virtual_network.vnet_id
+  local_vnet_name = module.virtual_network.vnet_name
+
+  remote_vnet_id = data.azurerm_virtual_network.hub_vnet.id
+  remote_vnet_name = data.azurerm_virtual_network.hub_vnet.name
+  remote_rg_name = data.azurerm_virtual_network.hub_vnet.resource_group_name
+
+  local_to_remote_peering_name = "spoke1-to-hub-peering"
+  remote_to_local_peering_name = "hub-to-spoke1-peering"
+}
+
+module "route_table" {
+  source              = "../modules/route_table"
+  route_table_name    = "rt-spoke1-to-nva"
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+
+  routes = [
+    {
+      name                   = "Force-To-NVA"
+      address_prefix         = "10.2.1.4"
+      next_hop_type          = "VirtualNetworkAppliance"
+      next_hop_in_ip_address = "10.0.1.4"
+    }
+  ]
+
+  subnet_associations = ["snet-postgres"]
+  
+}
+
 module "private_dns_zone" {
   source              = "../modules/private_dns"
   create_zone         = false
@@ -120,5 +154,10 @@ module "postgres" {
 
 data "azurerm_private_dns_zone" "hub_dns" {
   name                = "privatelink.postgres.database.azure.com"
+  resource_group_name = var.hub_resource_group_name
+}
+
+data "azurerm_virtual_network" "hub_vnet" {
+  name                = "vnet-hubpro" 
   resource_group_name = var.hub_resource_group_name
 }

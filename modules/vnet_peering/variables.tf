@@ -1,15 +1,15 @@
-variable "hub_to_spoke_peering_name" {
-  description = "The name of the virtual network peering from hub to spoke."
+variable "local_to_remote_peering_name" {
+  description = "The name of the virtual network peering from local to remote."
   type        = string
 }
 
-variable "spoke_vnet_id" {
-  description = "The ID of the spoke virtual network to peer with."
+variable "remote_vnet_id" {
+  description = "The ID of the remote virtual network to peer with."
   type        = string
 }
 
-variable "hub_vnet_id" {
-  description = "The ID of the hub virtual network to peer with."
+variable "local_vnet_id" {
+  description = "The ID of the local virtual network to peer with."
   type        = string
 }
 
@@ -25,7 +25,27 @@ variable "virtual_network_access" {
   default     = true
 }
 
-variable "spoke_to_hub_peering_name" {
-  description = "The name of the virtual network peering from spoke to hub."
+variable "remote_to_local_peering_name" {
+  description = "The name of the virtual network peering from remote to local."
+  type        = string
+}
+
+variable "local_rg_name" {
+  description = "The name of the resource group containing the local virtual network."
+  type        = string
+}
+
+variable "local_vnet_name" {
+  description = "The name of the local virtual network."
+  type        = string
+}
+
+variable "remote_rg_name" {
+  description = "The name of the resource group containing the remote virtual network."
+  type        = string
+}
+
+variable "remote_vnet_name" {
+  description = "The name of the remote virtual network."
   type        = string
 }

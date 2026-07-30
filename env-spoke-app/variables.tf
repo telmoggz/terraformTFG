@@ -73,3 +73,8 @@ variable "ssh_public_key_path" {
   type        = string
 }
 
+variable "hub_resource_group_name" {
+  description = "The name of the hub resource group."
+  type        = string
+}
+

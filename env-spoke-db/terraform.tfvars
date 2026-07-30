@@ -1,9 +1,10 @@
 
 resource_group_name     = "rg-spokepro-01"
 location                = "francecentral"
+virtual_network_name = "vnet-spokepro"
 hub_resource_group_name = "rg-hubpro-01"
 
-virtual_network_name = "vnet-spokepro"
+
 
 jump_ip = "10.0.2.4"
 app2_ip = "10.2.1.4"
