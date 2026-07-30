@@ -15,3 +15,9 @@ variable "vnet_links" {
     registration_enabled = bool
   }))
 }
+
+variable "create_zone" {
+  description = "Whether to create the private DNS zone."
+  type        = bool
+  default     = true
+}

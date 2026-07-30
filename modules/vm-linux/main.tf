@@ -12,6 +12,8 @@ resource "azurerm_network_interface" "nic" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
+  ip_forwarding_enabled = var.enable_ip_forwarding
+
   ip_configuration {
     name                          = "ipconfig-${var.vm_name}"
     subnet_id                     = var.subnet_id
@@ -45,6 +47,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = var.admin_username
-    public_key = file(var.ssh_public_key_path)
+    public_key = file(pathexpand(var.ssh_public_key_path))
   }
 }

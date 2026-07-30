@@ -118,3 +118,8 @@ variable "nva_storage_account_type" {
   type        = string
 }
 
+variable "nva_enable_ip_forwarding" {
+  description = "Whether to enable IP forwarding on the NVA server VM."
+  type        = bool
+  default     = true
+}

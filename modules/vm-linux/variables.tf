@@ -68,3 +68,9 @@ variable "storage_account_type" {
   description = "The storage account type of the OS disk."
   type        = string
 }
+
+variable "enable_ip_forwarding" {
+  description = "Whether to enable IP forwarding on the network interface."
+  type        = bool
+  default     = false
+}

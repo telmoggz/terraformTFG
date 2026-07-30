@@ -28,6 +28,7 @@ module "virtual_network" {
 
 module "private_dns_zone" {
   source              = "../modules/private_dns"
+  create_zone         = true
   resource_group_name = module.resource_group.name
 
   private_dns_zone_name = "privatelink.postgres.database.azure.com"
@@ -188,8 +189,9 @@ module "nva_vm" {
   admin_username      = var.admin_username
   ssh_public_key_path = var.ssh_public_key_path
 
-  size             = var.nva_size
-  create_public_ip = false
+  size                 = var.nva_size
+  create_public_ip     = false
+  enable_ip_forwarding = var.nva_enable_ip_forwarding
 
   image_publisher = var.nva_image_publisher
   image_offer     = var.nva_image_offer
