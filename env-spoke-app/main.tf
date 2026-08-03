@@ -45,16 +45,19 @@ module "route_table" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
 
-  routes = [
-    {
-      name                   = "Force-To-NVA"
-      address_prefix         = "10.1.1.4"
-      next_hop_type          = "VirtualNetworkAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
+routes = {
+    "Force-To-NVA" = {
+      address_prefix         = "10.1.1.0/24" 
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.0.1.4" 
     }
-  ]
+  }
 
-  subnet_associations = ["snet-cmp"]
+  subnet_associations = {
+    "assoc-cmp" = {
+       subnet_id = module.virtual_network.subnet_ids["snet-cmp"]
+    }
+  }
 
 }
 
@@ -62,7 +65,7 @@ module "route_table" {
 module "private_dns_zone" {
   source              = "../modules/private_dns"
   create_zone         = false
-  resource_group_name = var.hub_resource_group.name
+  resource_group_name = var.hub_resource_group_name
 
   private_dns_zone_name = "privatelink.postgres.database.azure.com"
 
@@ -75,7 +78,7 @@ module "private_dns_zone" {
 }
 
 # 6. Network Security Groups
-module "nsg_jump" {
+module "nsg_cmp" {
   source              = "../modules/nsg"
   nsg_name            = "nsg-cmp"
   location            = module.resource_group.location
@@ -95,7 +98,7 @@ module "nsg_jump" {
       destination_address_prefix = "*"
     },
     {
-      name                       = "Allow-PostgresSQL-Outbound"
+      name                       = "Allow-PostgreSQL-Outbound"
       priority                   = 100
       direction                  = "Outbound"
       access                     = "Allow"
@@ -119,60 +122,6 @@ module "nsg_jump" {
   ]
 }
 
-module "nsg_nva" {
-  source              = "../modules/nsg"
-  nsg_name            = "nsg-nva"
-  location            = module.resource_group.location
-  resource_group_name = module.resource_group.name
-  subnet_id           = module.virtual_network.subnet_ids["snet-nva"]
-
-  security_rules = [
-    {
-      name                       = "Allow-Internal-Inbound"
-      priority                   = 100
-      direction                  = "Inbound"
-      access                     = "Allow"
-      protocol                   = "*"
-      source_port_range          = "*"
-      destination_port_range     = "*"
-      source_address_prefix      = "VirtualNetwork"
-      destination_address_prefix = "*"
-    },
-    {
-      name                       = "Deny-all-Inbound"
-      priority                   = 1000
-      direction                  = "Inbound"
-      access                     = "Deny"
-      protocol                   = "*"
-      source_port_range          = "*"
-      destination_port_range     = "*"
-      source_address_prefix      = "Internet"
-      destination_address_prefix = "*"
-    },
-    {
-      name                       = "Allow-Internal-Outbound"
-      priority                   = 100
-      direction                  = "Outbound"
-      access                     = "Allow"
-      protocol                   = "*"
-      source_port_range          = "*"
-      destination_port_range     = "*"
-      source_address_prefix      = "*"
-      destination_address_prefix = "VirtualNetwork"
-    },
-    {
-      name                       = "Deny-All-Outbound"
-      priority                   = 1000
-      direction                  = "Outbound"
-      access                     = "Deny"
-      protocol                   = "*"
-      source_port_range          = "*"
-      destination_port_range     = "*"
-      source_address_prefix      = "*"
-      destination_address_prefix = "Internet"
-    }
-  ]
-}
 
 # 7. Virtual Machine
 module "cmp_vm" {

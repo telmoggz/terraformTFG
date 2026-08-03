@@ -14,10 +14,14 @@ module "virtual_network" {
 
   address_space = ["10.1.0.0/16"]
 
-  subnets = {
+subnets = {
     "snet-postgres" = {
       address_prefixes = ["10.1.1.0/24"]
-      delegation       = "Microsoft.DBforPostgreSQL/flexibleServers"
+      delegation = {
+        name            = "postgres-delegation"
+        service_name    = "Microsoft.DBforPostgreSQL/flexibleServers"
+        service_actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+      }
     }
   }
 }
@@ -45,24 +49,28 @@ module "route_table" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
 
-  routes = [
-    {
-      name                   = "Force-To-NVA"
-      address_prefix         = "10.2.1.4"
-      next_hop_type          = "VirtualNetworkAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
+  depends_on = [module.virtual_network]
+
+  routes = {
+    "Ret-To-NVA" = {
+      address_prefix         = "10.2.1.0/24" 
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.0.1.4" 
     }
-  ]
+  }
 
-  subnet_associations = ["snet-postgres"]
-
+  subnet_associations = {
+    "assoc-postgres" = {
+       subnet_id = module.virtual_network.subnet_ids["snet-postgres"]
+    }
+  }
 }
 
 # 5. Private DNS Zone
 module "private_dns_zone" {
   source              = "../modules/private_dns"
   create_zone         = false
-  resource_group_name = var.hub_resource_group.name
+  resource_group_name = var.hub_resource_group_name
 
   private_dns_zone_name = "privatelink.postgres.database.azure.com"
 
@@ -137,6 +145,7 @@ module "postgres" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
   delegated_subnet_id = module.virtual_network.subnet_ids["snet-postgres"]
+  postgres_version    = var.postgres_version
 
   private_dns_zone_id = data.azurerm_private_dns_zone.hub_dns.id
 
@@ -144,7 +153,6 @@ module "postgres" {
   administrator_password = var.postgres_admin_password
 
   sku_name   = var.postgres_sku_name
-  version    = var.postgres_version
   storage_mb = var.postgres_storage_mb
 
   backup_retention_days         = var.postgres_backup_retention_days

@@ -13,7 +13,7 @@ variable "location" {
   type        = string
 }
 
-variable "version" {
+variable "postgres_version" {
   description = "The version of the PostgreSQL server."
   type        = string
   default     = "14"
@@ -90,4 +90,10 @@ variable "db_name" {
   description = "The name of the database to create in the PostgreSQL server."
   type        = string
   default     = null
+}
+
+variable "public_network_access_enabled" {
+  description = "Whether to allow public network access to the PostgreSQL server."
+  type        = bool
+  default     = false
 }

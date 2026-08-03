@@ -1,6 +1,6 @@
 # Spoke2 Environment Terraform Variables
 resource_group_name     = "rg-spokepro-02"
-location                = "francecentral"
+location                = "Central US"
 virtual_network_name    = "vnet-spokepro2"
 hub_resource_group_name = "rg-hubpro-01"
 
@@ -14,7 +14,7 @@ ssh_public_key_path = "~/.ssh/id_rsa.pub"
 
 # Compute VM Configuration
 cmp_vm_name              = "vm-spokepro2-cmp"
-cmp_vm_size              = "Standard_D2s_v3"
+cmp_vm_size              = "Standard_F1als_v7"
 cmp_image_publisher      = "Canonical"
 cmp_image_offer          = "0001-com-ubuntu-server-jammy"
 cmp_image_sku            = "22_04-lts-gen2"

@@ -1,6 +1,6 @@
 # Spoke Environment Terraform Variables
 resource_group_name     = "rg-spokepro-01"
-location                = "francecentral"
+location                = "Central US"
 virtual_network_name    = "vnet-spokepro"
 hub_resource_group_name = "rg-hubpro-01"
 
