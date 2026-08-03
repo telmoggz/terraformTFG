@@ -41,6 +41,7 @@ module "private_dns_zone" {
   }
 }
 
+# 3. Network security groups
 module "nsg_jump" {
   source              = "../modules/nsg"
   nsg_name            = "nsg-jump"
@@ -151,6 +152,7 @@ module "nsg_nva" {
   ]
 }
 
+# 4. Virtual machines
 module "jump_vm" {
   source              = "../modules/vm-linux"
   vm_name             = var.jump_vm_name

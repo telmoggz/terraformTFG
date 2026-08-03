@@ -22,21 +22,23 @@ module "virtual_network" {
   }
 }
 
+# 3. VNet Peering
 module "vnet_peering" {
-  source              = "../modules/vnet_peering"
+  source = "../modules/vnet_peering"
 
-  local_rg_name = module.resource_group.name
-  local_vnet_id = module.virtual_network.vnet_id
+  local_rg_name   = module.resource_group.name
+  local_vnet_id   = module.virtual_network.vnet_id
   local_vnet_name = module.virtual_network.vnet_name
 
-  remote_vnet_id = data.azurerm_virtual_network.hub_vnet.id
+  remote_vnet_id   = data.azurerm_virtual_network.hub_vnet.id
   remote_vnet_name = data.azurerm_virtual_network.hub_vnet.name
-  remote_rg_name = data.azurerm_virtual_network.hub_vnet.resource_group_name
+  remote_rg_name   = data.azurerm_virtual_network.hub_vnet.resource_group_name
 
   local_to_remote_peering_name = "spoke2-to-hub-peering"
   remote_to_local_peering_name = "hub-to-spoke2-peering"
 }
 
+# 4. Route table
 module "route_table" {
   source              = "../modules/route_table"
   route_table_name    = "rt-spoke2-to-nva"
@@ -53,10 +55,10 @@ module "route_table" {
   ]
 
   subnet_associations = ["snet-cmp"]
-  
+
 }
 
-
+# 5. Private DNS Zone
 module "private_dns_zone" {
   source              = "../modules/private_dns"
   create_zone         = false
@@ -72,6 +74,7 @@ module "private_dns_zone" {
   }
 }
 
+# 6. Network Security Groups
 module "nsg_jump" {
   source              = "../modules/nsg"
   nsg_name            = "nsg-cmp"
@@ -81,38 +84,38 @@ module "nsg_jump" {
 
   security_rules = [
     {
-    name                       = "Deny-all-Inbound"
-    priority                   = 1000
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "Internet"
-    destination_address_prefix = "*"
-  },
+      name                       = "Deny-all-Inbound"
+      priority                   = 1000
+      direction                  = "Inbound"
+      access                     = "Deny"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "Internet"
+      destination_address_prefix = "*"
+    },
     {
-    name                       = "Allow-PostgresSQL-Outbound"
-    priority                   = 100
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "5432"
-    source_address_prefix      = var.app2_ip
-    destination_address_prefix = var.postgresql_ip
-  },
+      name                       = "Allow-PostgresSQL-Outbound"
+      priority                   = 100
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "5432"
+      source_address_prefix      = var.app2_ip
+      destination_address_prefix = var.postgresql_ip
+    },
     {
-    name                       = "Deny-All-Outbound"
-    priority                   = 1000
-    direction                  = "Outbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "Internet"
-  }
+      name                       = "Deny-All-Outbound"
+      priority                   = 1000
+      direction                  = "Outbound"
+      access                     = "Deny"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "Internet"
+    }
   ]
 }
 
@@ -171,6 +174,7 @@ module "nsg_nva" {
   ]
 }
 
+# 7. Virtual Machine
 module "cmp_vm" {
   source              = "../modules/vm-linux"
   vm_name             = var.cmp_vm_name
@@ -195,12 +199,13 @@ module "cmp_vm" {
 
 }
 
+# 8. Data sources for existing resources in the Hub
 data "azurerm_private_dns_zone" "hub_dns" {
   name                = "privatelink.postgres.database.azure.com"
   resource_group_name = var.hub_resource_group_name
 }
 
 data "azurerm_virtual_network" "hub_vnet" {
-  name                = "vnet-hubpro"  # Nombre exacto que le diste a la VNet del Hub
+  name                = "vnet-hubpro" # Nombre exacto que le diste a la VNet del Hub
   resource_group_name = var.hub_resource_group_name
 }

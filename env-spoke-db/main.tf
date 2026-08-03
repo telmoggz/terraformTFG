@@ -22,21 +22,23 @@ module "virtual_network" {
   }
 }
 
+# 3. VNet Peering
 module "vnet_peering" {
-  source              = "../modules/vnet_peering"
+  source = "../modules/vnet_peering"
 
-  local_rg_name = module.resource_group.name
-  local_vnet_id = module.virtual_network.vnet_id
+  local_rg_name   = module.resource_group.name
+  local_vnet_id   = module.virtual_network.vnet_id
   local_vnet_name = module.virtual_network.vnet_name
 
-  remote_vnet_id = data.azurerm_virtual_network.hub_vnet.id
+  remote_vnet_id   = data.azurerm_virtual_network.hub_vnet.id
   remote_vnet_name = data.azurerm_virtual_network.hub_vnet.name
-  remote_rg_name = data.azurerm_virtual_network.hub_vnet.resource_group_name
+  remote_rg_name   = data.azurerm_virtual_network.hub_vnet.resource_group_name
 
   local_to_remote_peering_name = "spoke1-to-hub-peering"
   remote_to_local_peering_name = "hub-to-spoke1-peering"
 }
 
+# 4. Route table
 module "route_table" {
   source              = "../modules/route_table"
   route_table_name    = "rt-spoke1-to-nva"
@@ -53,9 +55,10 @@ module "route_table" {
   ]
 
   subnet_associations = ["snet-postgres"]
-  
+
 }
 
+# 5. Private DNS Zone
 module "private_dns_zone" {
   source              = "../modules/private_dns"
   create_zone         = false
@@ -71,6 +74,7 @@ module "private_dns_zone" {
   }
 }
 
+# 6. Network Security Groups
 module "nsg_postgres" {
   source              = "../modules/nsg"
   nsg_name            = "nsg-postgres"
@@ -126,6 +130,7 @@ module "nsg_postgres" {
   ]
 }
 
+# 7. PostgreSQL Flexible Server
 module "postgres" {
   source              = "../modules/postgresql"
   server_name         = var.postgres_name
@@ -152,12 +157,13 @@ module "postgres" {
 
 }
 
+# 8. Data sources for existing resources in the Hub
 data "azurerm_private_dns_zone" "hub_dns" {
   name                = "privatelink.postgres.database.azure.com"
   resource_group_name = var.hub_resource_group_name
 }
 
 data "azurerm_virtual_network" "hub_vnet" {
-  name                = "vnet-hubpro" 
+  name                = "vnet-hubpro"
   resource_group_name = var.hub_resource_group_name
 }

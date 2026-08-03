@@ -1,3 +1,4 @@
+# This module creates an Azure PostgreSQL Flexible Server
 resource "azurerm_postgresql_flexible_server" "postgresql_server" {
   name                = var.server_name
   resource_group_name = var.resource_group_name
@@ -25,6 +26,7 @@ resource "azurerm_postgresql_flexible_server" "postgresql_server" {
 
 }
 
+# This module creates a PostgreSQL Flexible Server database
 resource "azurerm_postgresql_flexible_server_database" "db" {
   count     = var.db_name != null ? 1 : 0
   name      = var.db_name

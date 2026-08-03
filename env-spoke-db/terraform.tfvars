@@ -1,14 +1,14 @@
-
+# Spoke Environment Terraform Variables
 resource_group_name     = "rg-spokepro-01"
 location                = "francecentral"
-virtual_network_name = "vnet-spokepro"
+virtual_network_name    = "vnet-spokepro"
 hub_resource_group_name = "rg-hubpro-01"
 
-
-
+# Source and destination private IPs for NSG rules
 jump_ip = "10.0.2.4"
 app2_ip = "10.2.1.4"
 
+# PostgreSQL Flexible Server Configuration
 postgres_name           = "psql-tfg-pro-server"
 postgres_admin_username = "tfgadmin"
 postgres_admin_password = "TfgSecurePassword123!"

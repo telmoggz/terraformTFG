@@ -1,9 +1,11 @@
+#This module creates an Azure Route Table
 resource "azurerm_route_table" "route_table" {
   name                = var.route_table_name
   location            = var.location
   resource_group_name = var.resource_group_name
 }
 
+# This module creates routes in the Azure Route Table
 resource "azurerm_route" "route" {
   for_each = var.routes
 
@@ -17,6 +19,7 @@ resource "azurerm_route" "route" {
 
 }
 
+# This module associates the Azure Route Table with subnets
 resource "azurerm_subnet_route_table_association" "subnet_association" {
   for_each = var.subnet_associations
 

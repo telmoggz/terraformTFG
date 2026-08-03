@@ -1,3 +1,4 @@
+# This module creates a public IP address
 resource "azurerm_public_ip" "public_ip" {
   count               = var.create_public_ip ? 1 : 0
   name                = "pip-${var.vm_name}"
@@ -7,6 +8,7 @@ resource "azurerm_public_ip" "public_ip" {
   sku                 = "Standard"
 }
 
+# This module creates a network interface for the virtual machine
 resource "azurerm_network_interface" "nic" {
   name                = "nic-${var.vm_name}"
   location            = var.location
@@ -22,6 +24,7 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+#This module creates a Linux virtual machine
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = var.vm_name
   resource_group_name = var.resource_group_name
