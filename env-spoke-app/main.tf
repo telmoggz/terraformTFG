@@ -45,17 +45,17 @@ module "route_table" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
 
-  routes = {
+routes = {
     "Force-To-NVA" = {
-      address_prefix         = "10.1.1.0/24"
+      address_prefix         = "10.1.1.0/24" 
       next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4"
+      next_hop_in_ip_address = "10.0.1.4" 
     }
   }
 
   subnet_associations = {
     "assoc-cmp" = {
-      subnet_id = module.virtual_network.subnet_ids["snet-cmp"]
+       subnet_id = module.virtual_network.subnet_ids["snet-cmp"]
     }
   }
 
@@ -77,7 +77,7 @@ module "private_dns_zone" {
   }
 }
 
-# 6. Network Security Groups
+# 6. Network Security Group
 module "nsg_cmp" {
   source              = "../modules/nsg"
   nsg_name            = "nsg-cmp"
@@ -133,7 +133,7 @@ module "cmp_vm" {
   subnet_id = module.virtual_network.subnet_ids["snet-cmp"]
 
   admin_username      = var.admin_username
-  ssh_public_key_path = var.ssh_public_key_path
+  ssh_public_key_content = var.ssh_public_key_content
 
   size             = var.cmp_vm_size
   create_public_ip = false

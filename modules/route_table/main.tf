@@ -5,6 +5,7 @@ resource "azurerm_route_table" "route_table" {
   resource_group_name = var.resource_group_name
 }
 
+# This resource creates a time delay to ensure that the route table is fully provisioned before creating routes
 resource "time_sleep" "wait_for_subnets" {
   depends_on      = [azurerm_route_table.route_table]
   create_duration = "30s"

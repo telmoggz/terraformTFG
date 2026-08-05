@@ -10,7 +10,7 @@ postgresql_ip = "10.1.1.4"
 
 # Account and SSH configuration for the Linux VM
 admin_username      = "adminuser"
-ssh_public_key_path = "~/.ssh/id_rsa.pub"
+
 
 # Compute VM Configuration
 cmp_vm_name              = "vm-spokepro2-cmp"

@@ -26,6 +26,7 @@ module "virtual_network" {
   }
 }
 
+# 3. Private DNS Zone
 module "private_dns_zone" {
   source              = "../modules/private_dns"
   create_zone         = true
@@ -41,7 +42,7 @@ module "private_dns_zone" {
   }
 }
 
-# 3. Network security groups
+# 4. Network security groups
 module "nsg_jump" {
   source              = "../modules/nsg"
   nsg_name            = "nsg-jump"
@@ -152,7 +153,7 @@ module "nsg_nva" {
   ]
 }
 
-# 4. Virtual machines
+# 5. Virtual machines
 module "jump_vm" {
   source              = "../modules/vm-linux"
   vm_name             = var.jump_vm_name
@@ -162,7 +163,7 @@ module "jump_vm" {
   subnet_id = module.virtual_network.subnet_ids["snet-jump"]
 
   admin_username      = var.admin_username
-  ssh_public_key_path = var.ssh_public_key_path
+  ssh_public_key_content = var.ssh_public_key_content
 
   size             = var.jump_vm_size
   create_public_ip = true
@@ -189,7 +190,7 @@ module "nva_vm" {
   storage_account_type = var.nva_storage_account_type
 
   admin_username      = var.admin_username
-  ssh_public_key_path = var.ssh_public_key_path
+  ssh_public_key_content = var.ssh_public_key_content
 
   size                 = var.nva_size
   create_public_ip     = false
