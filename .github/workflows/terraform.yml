@@ -1,0 +1,105 @@
+name: 'Terraform Multi-Environment Deployment'
+
+# Trigger deployment on push to main branch
+on:
+  push:
+    branches: [ "main" ]
+
+# Grant permissions for Azure OIDC authentication
+permissions:
+  id-token: write 
+  contents: read
+
+# Map Azure secrets to Terraform ARM variables
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_USE_OIDC: true
+
+jobs:
+  # ---------------------------------------------------------
+  # 1. DEPLOY HUB
+  # ---------------------------------------------------------
+  deploy-hub:
+    name: 'Deploy Hub Environment'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./env-hub
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+  # ---------------------------------------------------------
+  # 2. DEPLOY SPOKE DB
+  # ---------------------------------------------------------
+  deploy-spoke-db:
+    name: 'Deploy Spoke Database'
+    needs: deploy-hub # Ensures Hub is deployed first
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./env-spoke-db
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+  # ---------------------------------------------------------
+  # 3. DEPLOY SPOKE APP
+  # ---------------------------------------------------------
+  deploy-spoke-app:
+    name: 'Deploy Spoke Application'
+    needs: deploy-hub # Ensures Hub is deployed first
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./env-spoke-app
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
