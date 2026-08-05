@@ -29,17 +29,6 @@ variable "private_dns_zone_id" {
   type        = string
 }
 
-variable "administrator_login" {
-  description = "The administrator login name for the PostgreSQL server."
-  type        = string
-}
-
-variable "administrator_password" {
-  description = "The administrator password for the PostgreSQL server."
-  type        = string
-  sensitive   = true
-}
-
 variable "sku_name" {
   description = "The SKU name for the PostgreSQL server."
   type        = string

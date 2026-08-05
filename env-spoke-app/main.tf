@@ -45,17 +45,17 @@ module "route_table" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
 
-routes = {
+  routes = {
     "Force-To-NVA" = {
-      address_prefix         = "10.1.1.0/24" 
+      address_prefix         = "10.1.1.0/24"
       next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4" 
+      next_hop_in_ip_address = "10.0.1.4"
     }
   }
 
   subnet_associations = {
     "assoc-cmp" = {
-       subnet_id = module.virtual_network.subnet_ids["snet-cmp"]
+      subnet_id = module.virtual_network.subnet_ids["snet-cmp"]
     }
   }
 

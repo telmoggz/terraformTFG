@@ -14,7 +14,7 @@ module "virtual_network" {
 
   address_space = ["10.1.0.0/16"]
 
-subnets = {
+  subnets = {
     "snet-postgres" = {
       address_prefixes = ["10.1.1.0/24"]
       delegation = {
@@ -53,15 +53,15 @@ module "route_table" {
 
   routes = {
     "Ret-To-NVA" = {
-      address_prefix         = "10.2.1.0/24" 
+      address_prefix         = "10.2.1.0/24"
       next_hop_type          = "VirtualAppliance"
-      next_hop_in_ip_address = "10.0.1.4" 
+      next_hop_in_ip_address = "10.0.1.4"
     }
   }
 
   subnet_associations = {
     "assoc-postgres" = {
-       subnet_id = module.virtual_network.subnet_ids["snet-postgres"]
+      subnet_id = module.virtual_network.subnet_ids["snet-postgres"]
     }
   }
 }
@@ -125,6 +125,17 @@ module "nsg_postgres" {
       destination_address_prefix = "*"
     },
     {
+      name                       = "Allow-EntraID-Outbound"
+      priority                   = 900
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "443"
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureActiveDirectory"
+    },
+    {
       name                       = "Deny-All-Outbound"
       priority                   = 1000
       direction                  = "Outbound"
@@ -148,9 +159,6 @@ module "postgres" {
   postgres_version    = var.postgres_version
 
   private_dns_zone_id = data.azurerm_private_dns_zone.hub_dns.id
-
-  administrator_login    = var.postgres_admin_username
-  administrator_password = var.postgres_admin_password
 
   sku_name   = var.postgres_sku_name
   storage_mb = var.postgres_storage_mb

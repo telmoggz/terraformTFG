@@ -10,7 +10,7 @@ terraform {
     resource_group_name  = "rg-tfstate-tfg"
     storage_account_name = "sttfstatetfg"
     container_name       = "tfstate"
-    key                  = "spoke2.terraform.tfstate" 
+    key                  = "spoke2.terraform.tfstate"
   }
 
 }

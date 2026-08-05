@@ -6,6 +6,7 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = var.address_space
 }
 
+# This resource creates a time delay to ensure that the virtual network is fully provisioned before creating subnets
 resource "time_sleep" "wait_for_vnet" {
   depends_on      = [azurerm_virtual_network.vnet]
   create_duration = "30s"
