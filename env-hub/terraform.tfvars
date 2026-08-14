@@ -11,7 +11,7 @@ jump_ip       = "10.0.2.4"
 postgresql_ip = "10.1.1.4"
 
 # Account and SSH configuration for the Linux VM
-admin_username      = "adminuser"
+admin_username = "adminuser"
 
 # Jump VM Configuration
 jump_vm_name              = "vm-hubpro-jump"

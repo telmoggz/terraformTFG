@@ -9,7 +9,7 @@ app2_ip       = "10.2.1.4"
 postgresql_ip = "10.1.1.4"
 
 # Account and SSH configuration for the Linux VM
-admin_username      = "adminuser"
+admin_username = "adminuser"
 
 
 # Compute VM Configuration

@@ -155,14 +155,14 @@ module "nsg_nva" {
 
 # 5. Virtual machines
 module "jump_vm" {
-  source              = "../modules/vm-linux"
+  source              = "../modules/vm_linux"
   vm_name             = var.jump_vm_name
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
 
   subnet_id = module.virtual_network.subnet_ids["snet-jump"]
 
-  admin_username      = var.admin_username
+  admin_username         = var.admin_username
   ssh_public_key_content = var.ssh_public_key_content
 
   size             = var.jump_vm_size
@@ -179,7 +179,7 @@ module "jump_vm" {
 }
 
 module "nva_vm" {
-  source              = "../modules/vm-linux"
+  source              = "../modules/vm_linux"
   vm_name             = var.nva_name
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
@@ -189,7 +189,7 @@ module "nva_vm" {
   os_disk_caching      = var.nva_os_disk_caching
   storage_account_type = var.nva_storage_account_type
 
-  admin_username      = var.admin_username
+  admin_username         = var.admin_username
   ssh_public_key_content = var.ssh_public_key_content
 
   size                 = var.nva_size

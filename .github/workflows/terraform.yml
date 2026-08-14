@@ -18,9 +18,8 @@ env:
   ARM_USE_OIDC: true
 
 jobs:
-  # ---------------------------------------------------------
+  
   # 1. DEPLOY HUB
-  # ---------------------------------------------------------
   deploy-hub:
     name: 'Deploy Hub Environment'
     runs-on: ubuntu-latest
@@ -48,9 +47,7 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
-  # ---------------------------------------------------------
   # 2. DEPLOY SPOKE DB
-  # ---------------------------------------------------------
   deploy-spoke-db:
     name: 'Deploy Spoke Database'
     needs: deploy-hub # Ensures Hub is deployed first
@@ -77,9 +74,7 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
-  # ---------------------------------------------------------
   # 3. DEPLOY SPOKE APP
-  # ---------------------------------------------------------
   deploy-spoke-app:
     name: 'Deploy Spoke Application'
     needs: deploy-hub # Ensures Hub is deployed first

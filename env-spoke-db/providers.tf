@@ -7,14 +7,14 @@ terraform {
     time = {
       source  = "hashicorp/time"
       version = "~> 0.9"
+    }
   }
-  }
-  
+
   backend "azurerm" {
     resource_group_name  = "rg-tfstate-tfg"
     storage_account_name = "sttfstatetfg"
     container_name       = "tfstate"
-    key                  = "spoke.terraform.tfstate" 
+    key                  = "spoke.terraform.tfstate"
   }
 
 }
