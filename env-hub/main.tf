@@ -42,7 +42,7 @@ module "private_dns_zone" {
   }
 }
 
-# 4. Network security groups
+# 4. Network security groups 
 module "nsg_jump" {
   source              = "../modules/nsg"
   nsg_name            = "nsg-jump"
